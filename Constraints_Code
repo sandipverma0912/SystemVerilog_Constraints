@@ -1,4 +1,10 @@
+class cons;
 
+endclass
+
+module tb;
+
+endmodule
 
 
 
