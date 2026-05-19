@@ -49,7 +49,7 @@ endmodule
 //---------- method-3 ----------//
 class cons;
   rand bit num[];
-  constraint size {num.size() inside {[12:15]};}
+  constraint size {num.size inside {[12:15]};}
   constraint value {foreach(num[i]){
                     num[0]==0;
                     if(i>0)
@@ -67,6 +67,12 @@ module tb;
       c.randomize();
   end
 endmodule
+
+
+
+
+
+
 
 
 
