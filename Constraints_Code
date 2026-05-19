@@ -1,9 +1,71 @@
+Q1.Write a constraint to generate below pattern 0101010101...
+ANS:
+//---------- method-1 ----------//
 class cons;
-
+  rand bit num[];
+  constraint size {num.size() inside {[12:15]};}
+  constraint value {foreach(num[i])
+                   if(i%2==0)
+                     num[i]==0;
+                   else
+                     num[i] ==1;}
+  function void post_randomize();
+    $display("num=%0p",num);
+  endfunction
 endclass
 
 module tb;
+  cons c;
+  initial begin
+    c = new();
+    repeat(5)
+      c.randomize();
+  end
+endmodule
 
+//---------- method-2 ----------//
+class cons;
+  rand bit num[];
+  constraint size {num.size() inside {[12:15]};}
+  constraint value {foreach(num[i]){
+                    if(i==0)
+                      num[i]==0;
+                    if(i<$size(num)-1) //it is for array upper boundry
+                      num[i] != num[i+1];}}
+  function void post_randomize();
+    $display("num=%0p",num);
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    repeat(5)
+      c.randomize();
+  end
+endmodule
+
+//---------- method-3 ----------//
+class cons;
+  rand bit num[];
+  constraint size {num.size() inside {[12:15]};}
+  constraint value {foreach(num[i]){
+                    num[0]==0;
+                    if(i>0)
+                      num[i] != num[i-1];}}
+  function void post_randomize();
+    $display("num=%0p",num);
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    repeat(5)
+      c.randomize();
+  end
 endmodule
 
 
