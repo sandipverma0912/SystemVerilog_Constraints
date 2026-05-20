@@ -2,15 +2,15 @@ Q1.Write a constraint to generate below pattern 0101010101...
 ANS:
 //---------- method-1 ----------//
 class cons;
-  rand bit num[];
-  constraint size {num.size() inside {[12:15]};}
-  constraint value {foreach(num[i])
+  rand bit array[];
+  constraint size {array.size() inside {[12:15]};}
+  constraint value {foreach(array[i])
                    if(i%2==0)
-                     num[i]==0;
+                     array[i]==0;
                    else
-                     num[i] ==1;}
+                     array[i] ==1;}
   function void post_randomize();
-    $display("num=%0p",num);
+    $display("array=%0p",array);
   endfunction
 endclass
 
@@ -25,15 +25,15 @@ endmodule
 
 //---------- method-2 ----------//
 class cons;
-  rand bit num[];
-  constraint size {num.size() inside {[12:15]};}
-  constraint value {foreach(num[i]){
+  rand bit array[];
+  constraint size {array.size() inside {[12:15]};}
+  constraint value {foreach(array[i]){
                     if(i==0)
-                      num[i]==0;
-                    if(i<$size(num)-1) //it is for array upper boundry
-                      num[i] != num[i+1];}}
+                      array[i]==0;
+                    if(i<$size(array)-1) //it is for array upper boundry
+                      array[i] != array[i+1];}}
   function void post_randomize();
-    $display("num=%0p",num);
+    $display("array=%0p",array);
   endfunction
 endclass
 
@@ -48,14 +48,14 @@ endmodule
 
 //---------- method-3 ----------//
 class cons;
-  rand bit num[];
-  constraint size {num.size inside {[12:15]};}
-  constraint value {foreach(num[i]){
-                    num[0]==0;
+  rand bit array[];
+  constraint size {array.size inside {[12:15]};}
+  constraint value {foreach(array[i]){
+                    array[0]==0;
                     if(i>0)
-                      num[i] != num[i-1];}}
+                      array[i] != array[i-1];}}
   function void post_randomize();
-    $display("num=%0p",num);
+    $display("array=%0p",array);
   endfunction
 endclass
 
@@ -67,6 +67,59 @@ module tb;
       c.randomize();
   end
 endmodule
+
+
+
+Q2:Write a constraint to generate below pattern 1234554321
+ANS:
+//---------- method-1 ----------//
+class cons;
+  rand int array[];
+  constraint size {array.size() == 10;}
+  constraint range {foreach(array[i])
+                      array[i] inside {[1:5]};}
+  constraint value {foreach(array[i]){
+                      if(i<5)
+                        array[i] == i+1;
+                      if(i>5)
+                        array[i]==10-i;}}
+  function void post_randomize();
+    $display("array=%0p",array);
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    c.randomize();
+  end
+endmodule
+
+//---------- method-2 ----------//
+class cons;
+  rand int array[];
+  constraint size {array.size()==10;}
+  constraint range {foreach(array[i])
+                      array[i] inside {[1:5]};}
+  constraint value {foreach(array[i])
+                    if(i<5)
+                      array[i] == i+1;
+                    else
+                      array[i] == i-2*(i%5);}
+  function void post_randomize();
+    $display("array=%0p",array);
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    c.randomize();
+  end
+endmodule
+  
 
 
 
