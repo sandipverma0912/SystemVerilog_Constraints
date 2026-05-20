@@ -176,6 +176,79 @@ module tb;
     c.randomize();
   end
 endmodule
+
+
+
+Q4:write a constraint to generate below pattern 5-10 15-20 25-30
+ANS:
+//---------- method-1 ----------//
+class cons;
+  rand int array[];
+  constraint size {array.size()==10;}
+  constraint value {foreach(array[i])
+                    if(i%2==0)
+                      array[i] == 5*(i+1);
+                    else
+                      array[i] == -5*(i+1);}
+  function void post_randomize();
+    $display("array=%0p",array);
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    c.randomize();
+  end
+endmodule
+
+//---------- method-2 ----------//
+class cons;
+  rand int array[];
+  constraint size {array.size()==11;} // array size always take odd in this method
+  constraint value {foreach(array[i])
+                    if(i%2==0)
+                      array[i] == 5*(i+1);
+                    else if(i<$size(array)-1) // here if condition solve the array bound error
+                      array[i] == array[0] - array[i+1];}
+  function void post_randomize();
+    $display("array=%0p",array);
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    c.randomize();
+  end
+endmodule
+
+
+
+Q5:write a constraint to generate below pattern 5-10 15-30 25-50
+ANS:
+class cons;
+  rand int array[];
+  constraint size {array.size()==11;} // array size always take odd.
+  constraint value {foreach(array[i])
+                    if(i%2==0)
+                      array[i] == 5*(i+1);
+                    else if(i<$size(array)-1) // here if condition solve the array bound error
+                      array[i]== (i%10)*(array[i-1] - array[i+1]);}
+  function void post_randomize();
+    $display("array=%0p",array);
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    c.randomize();
+  end
+endmodule
   
 
 
