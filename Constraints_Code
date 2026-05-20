@@ -76,12 +76,10 @@ ANS:
 class cons;
   rand int array[];
   constraint size {array.size() == 10;}
-  constraint range {foreach(array[i])
-                      array[i] inside {[1:5]};}
   constraint value {foreach(array[i]){
                       if(i<5)
                         array[i] == i+1;
-                      if(i>5)
+                      if(i>=5)
                         array[i]==10-i;}}
   function void post_randomize();
     $display("array=%0p",array);
@@ -100,13 +98,72 @@ endmodule
 class cons;
   rand int array[];
   constraint size {array.size()==10;}
-  constraint range {foreach(array[i])
-                      array[i] inside {[1:5]};}
   constraint value {foreach(array[i])
                     if(i<5)
                       array[i] == i+1;
                     else
                       array[i] == i-2*(i%5);}
+  function void post_randomize();
+    $display("array=%0p",array);
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    c.randomize();
+  end
+endmodule
+
+
+
+Q3:Write a constraint to generate below pattern 9 19 29 39 49 59 69 79
+ANS:
+//---------- method-1 ----------//
+class cons;
+  rand int array[];
+  constraint size {array.size()==10;}
+  constraint value {foreach(array[i])
+                      array[i] == 10*i + 9;}
+  function void post_randomize();
+    $display("array=%0p",array);
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    c.randomize();
+  end
+endmodule
+
+//---------- method-2 ----------//
+class cons;
+  rand byte array[];
+  constraint size {array.size()==10;}
+  constraint value {foreach(array[i])
+                      array[i] == 9*(i+1)+i;}
+  function void post_randomize();
+    $display("array=%0p",array);
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    c.randomize();
+  end
+endmodule
+
+//---------- method-3 ----------//
+class cons;
+  rand bit[7:0] array[];
+  constraint size {array.size()==10;}
+  constraint value {foreach(array[i])
+                      array[i] == 10*(i+1)-1;}
   function void post_randomize();
     $display("array=%0p",array);
   endfunction
