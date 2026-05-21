@@ -406,12 +406,70 @@ endmodule
 
 
 
+Q11:Write a constraint to generate a random even number between 50 and 100.
+ANS:
+//---------- method-1 without array ----------//
+class cons;
+  rand int num; // Here also we use randc for cyclic
+  constraint range {num inside {[50:100]};}
+  constraint value {num%2==0;}
+  function void post_randomize();
+    $display("num=%0d",num);
+  endfunction
+endclass
 
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    repeat(20)
+      assert(c.randomize());
+  end
+endmodule
 
+//---------- method-2 with array random generation----------//
+class cons;
+  rand int array[];
+  constraint size {array.size()==26;}
+  constraint range {foreach(array[i])
+                      array[i] inside {[50:100]};}
+  constraint value {foreach(array[i])
+                      array[i]%2 == 0;}
+  function void post_randomize();
+    $display("array=%0p",array);
+  endfunction
+endclass
 
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    assert(c.randomize());
+  end
+endmodule
 
+//---------- method-3 with array arrange generation----------//
+class cons;
+  rand int array[];
+  constraint size {array.size()==26;}
+  constraint range {foreach(array[i])
+                      array[i] inside {[50:100]};}
+  constraint value {foreach(array[i]){
+                      array[i]%2 == 0;
+                       if(i>0)
+                         array[i]>array[i-1];}}
+  function void post_randomize();
+    $display("array=%0p",array);
+  endfunction
+endclass
 
-
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    assert(c.randomize());
+  end
+endmodule
 
 
 
