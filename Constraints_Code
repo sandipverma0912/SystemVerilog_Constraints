@@ -249,10 +249,160 @@ module tb;
     c.randomize();
   end
 endmodule
+
+
+
+Q6:Write a constraaint to generate the pattern 1122334455
+ANS:
+//---------- method-1 ----------//
+class cons;
+  rand int array[];
+  constraint size {array.size()==10;}
+  constraint value {foreach(array[i])
+                      array[i] == i/2 + 1;}
+  function void post_randomize();
+    $display("array=%0p",array);
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    assert(c.randomize());
+  end
+endmodule
+
+//---------- method-2 ----------//
+class cons;
+  rand int array[];
+  constraint size {array.size()==10;}
+  constraint value {foreach(array[i])
+                      array[i] == (i+2)/2;}
+  function void post_randomize();
+    $display("array=%0p",array);
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    assert(c.randomize());
+  end
+endmodule
+
+
+
+Q7:Write a constraaint to generate the pattern 111222333444555
+ANS:
+//---------- method-1 ----------//
+class cons;
+  rand int array[];
+  constraint size {array.size()==15;}
+  constraint value {foreach(array[i])
+                      array[i] == i/3 + 1;}
+  function void post_randomize();
+    $display("array=%0p",array);
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    assert(c.randomize());
+  end
+endmodule
+
+//---------- method-2 ----------//
+class cons;
+  rand int array[];
+  constraint size {array.size()==15;}
+  constraint value {foreach(array[i])
+                      array[i] == (i+3)/3;}
+  function void post_randomize();
+    $display("array=%0p",array);
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    assert(c.randomize());
+  end
+endmodule
+
+
+
+Q8:Write a code to generate random number between 1.35 and 2.57
+ANS:
+class cons;
+  rand int num;
+  real b;
+  constraint range {num inside {[135:257]};}
+  function void post_randomize();
+    b = num/100.0;
+    $display("random number between 1.35 and 2.57 -> b=%0.2f",b);
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    repeat(10)
+    c.randomize();
+  end
+endmodule
   
 
 
+Q9:Write a constraint to generate the pattern 0102030405.
+ANS:
+class cons;
+  rand int array[];
+  constraint size {array.size()==10;}
+  constraint value {foreach(array[i])
+                   if(i%2==0)
+                     array[i]==0;
+                   else
+                     array[i] == (i+1)/2;}
+  function void post_randomize();
+    $display("array=%0p",array);
+  endfunction
+endclass
 
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    c.randomize();
+  end
+endmodule
+
+
+
+Q10:Write constraint to generate random values 25,27,30,36,40,45 without using "set membership".
+ANS:
+class cons;
+  randc int num; // here we also use rand
+  constraint range {num inside {[25:45]};}
+  constraint value {(num%5==0 ||num%9==0); num!=35;}
+  function void post_randomize();
+    $display("num = %0d",num);
+  endfunction 
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    repeat(10)
+      assert(c.randomize());
+  end
+endmodule
 
 
 
