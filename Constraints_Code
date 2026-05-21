@@ -473,3 +473,27 @@ endmodule
 
 
 
+Q12:Write for a 32 bit rand variable such that it should have 12 number of 1's non consecutively.
+ANS:
+class cons;
+  rand bit[31:0] num;
+  constraint value {foreach(num[i])
+                    if(i>0 && num[i]==1)
+                      num[i] != num[i-1];
+                      $countones(num)==12;}
+  function void post_randomize();
+    $display("num=%b[%0d][%0d]",num,num,$countones(num));
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    repeat(5)
+      c.randomize();
+  end
+endmodule
+
+
+
