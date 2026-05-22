@@ -497,3 +497,35 @@ endmodule
 
 
 
+Q13:Write a constraint to genarate FACTORIAL of first 5 even numbers and odd numbers .
+ANS:
+class cons;
+  rand int even_fact[];
+  rand int odd_fact[];
+  constraint size {even_fact.size==5; odd_fact.size==5;}
+  constraint value {foreach(even_fact[i]){
+                      even_fact[i] == fact(2*i);
+                      odd_fact[i] == fact((2*i)+1);}}
+  function int fact(int a);
+       if(a==0)
+         fact=1;
+       else
+         fact=a*fact(a-1);
+         return fact;
+  endfunction
+  function void post_randomize();
+    $display("even_fact=%0p , odd_fact=%0p",even_fact,odd_fact);
+  endfunction
+endclass
+                    
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    c.randomize();
+  end
+endmodule
+  
+
+
+
