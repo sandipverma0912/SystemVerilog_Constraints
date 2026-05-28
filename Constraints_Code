@@ -525,7 +525,95 @@ module tb;
     c.randomize();
   end
 endmodule
+
+
+
+Q14: Write a constraint such that even locations contains odd numbers and odd locations contains even numbers.
+ANS:
+class cons;
+  rand int array[];
+  constraint size {array.size()==10;}
+  constraint range {foreach(array[i])
+                      array[i] inside {[0:200]};}
+  constraint value {foreach(array[i])
+                   if(i%2==0)
+                     array[i]%2 != 0;
+                   else
+                     array[i]%2 == 0;}
+  function void post_randomize();
+    $display("array = %0p",array);
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    c.randomize();
+  end
+endmodule
   
+
+
+Q15: Write a SystemVerilog program to randomize a 32-bit variable, but only randomize the 12th bit.
+ANS:
+//---------- method-1 ----------//  
+class cons;
+  rand bit [0:31] num;
+  constraint value {foreach(num[i])
+                      if(i==12)
+                         num[i] inside {0,1};
+                      else
+                         num[i] == 0;}
+  function void post_randomize();
+    $display("num=%b",num);
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    repeat(10)
+      c.randomize();
+  end
+endmodule
+
+//---------- method-2 ----------//
+class cons;
+  rand bit [0:31] num;
+  constraint value {num[0:10] == 0;
+                    num[12:31] == 0;}
+  function void post_randomize();
+    $display("num = %b",num);
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    repeat(10)
+      c.randomize();
+  end
+endmodule
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
