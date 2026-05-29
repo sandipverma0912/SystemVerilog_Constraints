@@ -600,6 +600,65 @@ endmodule
 
 
 
+Q16:Write a constraint on two dimensional array for generating even numbers in the 
+first 4 locations and odd numbers in the next 4 locations.
+Also the even number should be in multiple of 4 and odd number should be multiple of 3.
+ANS:
+//---------- method-1 ----------//    
+class cons;
+  rand int array[][];
+  constraint size {array.size()==2;
+                   foreach(array[i])
+                     array[i].size()==4;}
+  constraint range {foreach(array[i])
+                     foreach(array[i][j])
+                       array[i][j] inside {[0:200]};}
+  constraint value {foreach(array[i])
+                     foreach(array[i][j])
+                       if(i==0)
+                         array[i][j]%4==0;
+                       else
+                         array[i][j]%3==0 && array[i][j]%2!=0;}
+  function void post_randomize();
+    $display("array=%0p",array);
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    c.randomize();
+  end
+endmodule
+
+//---------- method-2 ----------//
+class cons;
+  rand int array[][];
+  constraint size {array.size()==2;
+                   foreach(array[i])
+                     array[i].size()==4;}
+  constraint value {foreach(array[i,j]){
+                      array[i][j] inside {[0:200]};
+                        if((i*4+j)<4)
+                          array[i][j]%4==0;
+                        else
+                          array[i][j]%2!=0 && array[i][j]%3==0;}}
+  function void post_randomize();
+    $display("array=%p",array);
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    c.randomize();
+  end
+endmodule
+
+
+
 
 
 
