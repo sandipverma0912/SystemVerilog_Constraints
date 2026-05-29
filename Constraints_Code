@@ -659,6 +659,51 @@ endmodule
 
 
 
+Q17:Constraint to generate bit[7:0] array1[10] with unique values and also multiple of 3.
+Ans:
+//---------- method-1 ----------//
+class cons;
+  rand bit[7:0] array[10];
+  constraint value {foreach(array[i]){
+                     foreach(array[j])
+                       if(i!=j)
+                         array[i] != array[j];
+                         array[i]%3==0;}}
+  function void post_randomize();
+    foreach(array[i]) //If we take bit data type in array we get value in Hex, but we use the foreach we get the value in decimal. 
+      $display("array=%0d",array[i]);
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    c.randomize();
+  end
+endmodule
+
+//---------- method-2 ----------//
+class cons;
+  rand bit[7:0] array[10];
+  constraint value {foreach(array[i])
+                      array[i]%3==0;
+                      unique{array};}
+  function void post_randomize();
+    $display("array=%0p",array); //If we take bit data type in array we get value in Hex
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    c.randomize();
+  end
+endmodule
+
+
+
 
 
 
