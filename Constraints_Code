@@ -704,6 +704,33 @@ endmodule
 
 
 
+Q18:Write a constraint to generate unique numbers in an array without using unique keyword.
+ANS:
+class cons;
+  rand int array[];
+  constraint size {array.size() inside {[10:15]};}
+  constraint range {foreach(array[i])
+                      array[i] inside {[0:200]};}
+  constraint value {foreach(array[i])
+                     foreach(array[j])
+                      if(i!=j)
+                        array[i] != array[j];}
+  function void post_randomize();
+    $display("array=%0p",array);
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    repeat(5)
+    c.randomize();
+  end
+endmodule
+
+
+
 
 
 
