@@ -797,16 +797,20 @@ class cons;
   constraint range {num inside {[1:100]};}
   function int prime_num(int a);
     count = 0;
-    for(int i=2; i<a; i++)begin
-      if(a%i==0)
-        count++;
+    if(a==1)
+      return 2;
+    else begin
+      for(int i=2; i<=a; i++)begin
+        if(a%i==0)
+          count++;
+      end
+      return count;
     end
-    return count;
   endfunction
   function void post_randomize();
     int y;
     y = prime_num(num);
-    if(y==0)
+    if(y==1)
     $display("number is prime -> %0d[%0d]",num,y);
   endfunction
 endclass
@@ -815,7 +819,7 @@ module tb;
   cons c;
   initial begin
     c = new();
-    repeat(50)
+    repeat(100)
       c.randomize();
   end
 endmodule
