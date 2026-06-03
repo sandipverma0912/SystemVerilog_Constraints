@@ -731,7 +731,7 @@ endmodule
 
 
 
-Q18:Write a constraint to generate prime numbers between the range of 1 to 100.
+Q19:Write a constraint to generate prime numbers between the range of 1 to 100.
 Ans:
 //---------- method-1 using constraint only ----------//
 class cons;
@@ -774,7 +774,6 @@ class cons;
       end
     end
   endfunction
-  
   function void post_randomize();
     if(prime_num(num))
     $display("prime number -> %0d[num=%0d]",prime_num(num),num);
@@ -821,6 +820,25 @@ module tb;
     c = new();
     repeat(100)
       c.randomize();
+  end
+endmodule
+
+//---------- method-4 without using function with counter----------//
+module tb;
+  int num,count;
+  initial begin
+    for(int j=0; j<10; j++)begin
+      count = 0;
+      num = $urandom_range(1,100);
+      for(int i=2; i<=num; i++)begin
+        if(num==1)
+        count +=3;
+        else if(num%i==0)
+          count++;
+      end
+      if(count==1)
+        $display("number is prime -> prime_num=%0d , count=%0d",num,count);
+    end
   end
 endmodule
 
