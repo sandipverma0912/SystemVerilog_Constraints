@@ -731,6 +731,36 @@ endmodule
 
 
 
+Q18:Write a constraint to generate prime numbers between the range of 1 to 100.
+Ans:
+//---------- method-1 using constraint only ----------//
+class cons;
+  randc int num; //using randc to get all the prime numbers between 1 to 100.
+  constraint range {num inside {[1:100]};}
+  constraint value {num!=1;
+                    (num==2) || num%2!=0;
+                    (num==3) || num%3!=0;
+                    (num==5) || num%5!=0;
+                    (num==7) || num%7!=0;}
+  function void post_randomize();
+    $display("generate prime numbers = %0d",num);
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    repeat(30)
+      c.randomize();
+  end
+endmodule
+
+//---------- method-2 using function ----------//
+
+
+
+
 
 
 
