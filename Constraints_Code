@@ -757,6 +757,38 @@ module tb;
 endmodule
 
 //---------- method-2 using function ----------//
+class cons;
+  rand int num;
+  constraint range {num inside {[1:100]};}
+  function int prime_num(int a);
+    if(a<2)
+      return 0;
+    else if(a==2)
+      return a;
+    else begin
+      for(int i=2; i<a; i++)begin
+        if(a%i==0)
+          return 0;
+        else
+          prime_num = a;
+      end
+    end
+  endfunction
+  
+  function void post_randomize();
+    if(prime_num(num))
+    $display("prime number -> %0d[num=%0d]",prime_num(num),num);
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    repeat(100)
+      c.randomize();
+  end
+endmodule
 
 
 
