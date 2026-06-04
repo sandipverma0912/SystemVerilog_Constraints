@@ -900,6 +900,35 @@ endmodule
 
 
 
+Q22:write a constraint to randmoly genrate 10 unquie numbers between 99 to 100.
+Ans:
+class cons;
+  rand int array[];
+  constraint size {array.size()==10;}
+  constraint range {foreach(array[i])
+                      array[i] inside {[990:1000]};}
+  constraint value {foreach(array[i])
+                     foreach(array[j])
+                      if(i!=j)
+                        array[i] != array[j];}
+  function void post_randomize();
+    real unique_num[10];
+    foreach(array[i])
+      unique_num[i] = array[i]/10.0;
+    $display("unique_num=%0p , array=%0p",unique_num,array);
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    c.randomize();
+  end
+endmodule
+
+
+
 
 
 
