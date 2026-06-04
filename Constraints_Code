@@ -869,6 +869,37 @@ endmodule
 
 
 
+Q21:Write a constraint to generate consecutive elements using Fixed size array and also write the constraint to generate non consecutive elements?
+ANS:
+class cons;
+  rand int array_c[10];
+  rand int array_nc[10];
+  constraint range {foreach(array_c[i])
+                      array_c[i] inside {[0:100]};}
+  constraint range_2 {foreach(array_nc[i])
+                        array_nc[i] inside {[0:100]};}
+  constraint consecutive {foreach(array_c[i])
+                            array_c[i]==i;}
+  constraint non_consecutive {foreach(array_nc[i])
+                               if(i>0)
+                                 array_nc[i] != array_nc[i-1];}
+  function void post_randomize();
+    $display("consecutive array value -> array_c=%0p",array_c);
+    $display("non_consecutive array value -> array_nc=%0p",array_nc);
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    if(!c.randomize())
+      $error("randomization failled");
+  end
+endmodule
+
+
+
 
 
 
