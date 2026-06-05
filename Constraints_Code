@@ -929,6 +929,37 @@ endmodule
 
 
 
+Q23:Write a constraint sunch that array size between 5 to 10 values of the array are in asscending order.
+In this program Iam going to use extern constraint.
+Ans:
+class cons;
+  rand int array[];
+  constraint size;
+  constraint range;
+  constraint value;
+  function void post_randomize();
+    $display("generate asscending order value -> array=%0p",array);
+  endfunction
+endclass
+constraint cons::size {array.size() inside {[5:10]};}
+constraint cons::range {foreach(array[i])
+                          array[i] inside {[1:100]};}
+constraint cons::value {foreach(array[i])
+                         if(i>0)
+                           array[i] > array[i-1];}
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    repeat(5)
+      if(!c.randomize())
+        $error("randomization failled");
+  end
+endmodule
+
+
+
 
 
 
