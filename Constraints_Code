@@ -960,6 +960,60 @@ endmodule
 
 
 
+Q24:Write a constraint to generate even numbers should in the range of 10 to 30 using Fixed size array, Dynamic array & Queue.
+Ans:
+//---------- method-1 ----------//
+class cons;
+  rand int f_array[10];
+  rand int d_array[];
+  rand int queue[$];
+  constraint size {d_array.size()==10; queue.size()==10;}
+  constraint range {foreach(f_array[i]){
+                     f_array[i] inside {[10:30]};
+                     d_array[i] inside {[10:30]};
+                     queue[i] inside {[10:30]};}}
+  constraint value {foreach(f_array[i]){
+                     f_array[i]%2==0;
+                     d_array[i]%2==0;
+                     queue[i]%2==0;}}
+  function void post_randomize();
+    $display("f_array=%0p \nd_array=%0p \nqueue=%0p",f_array,d_array,queue);
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    c.randomize();
+  end
+endmodule
+
+//---------- method-2 ----------//
+class cons;
+  rand int f_array[10];
+  rand int d_array[];
+  rand int queue[$];
+  constraint size {d_array.size()==10; queue.size()==10;}
+  constraint range_value {foreach(f_array[i]){
+                           f_array[i] inside {[10:30]} && f_array[i]%2==0;
+                           d_array[i] inside {[10:30]} && d_array[i]%2==0;
+                           queue[i] inside {[10:30]} && queue[i]%2==0;}}
+endclass
+    
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    if(c.randomize())
+      $display("f_array=%0p \nd_array=%0p \nqueue=%0p",c.f_array,c.d_array,c.queue);
+    else
+      $display("randomization fail");
+   end
+endmodule
+
+
+
 
 
 
