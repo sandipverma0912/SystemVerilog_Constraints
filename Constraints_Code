@@ -1057,6 +1057,28 @@ endmodule
 
 
 
+Q26:Write a constraint to demonstrate solve before constraint.
+Ans:
+class cons;
+  rand bit a;
+  rand bit [7:0] b;
+  constraint value {(a==1) -> (b==0); solve a before b;} //if we use solve before method first solve a then solve b.
+  function void post_randomize();
+    $display("a=%0d , b=%0d",a,b); // if a is 1 then b is 0. if a is not 1 then b display it's all possible value including 0 also.
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    repeat(20)
+      c.randomize();
+  end
+endmodule
+
+
+
 
 
 
