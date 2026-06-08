@@ -1014,6 +1014,50 @@ endmodule
 
 
 
+Q25:Write a constraint so that if we randomize a single bit variable for 10 times values should generate be like 101010101010.
+Ans:
+//---------- method-1 ----------//
+class cons;
+  rand bit num;
+  bit prev=0;
+  constraint value {num != prev;}
+  function void post_randomize();
+    prev = num;
+    $write("%b",num);
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    repeat(10)
+      c.randomize();
+  end
+endmodule
+
+//---------- method-2 ----------//
+class cons;
+  rand bit num;
+  bit prev=0;
+  constraint value {num != prev;}
+  function void post_randomize();
+    $write("%b%b",num,prev);
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    repeat(5)
+      c.randomize();
+  end
+endmodule
+
+
+
+
 
 
 
