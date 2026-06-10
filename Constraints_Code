@@ -1079,6 +1079,102 @@ endmodule
 
 
 
+Q27.Write a code to generate unique elements in an array without using unique keyword and constraints.
+Ans:
+//---------- method-1 ----------//
+class without_cons;
+  int array[];
+  function void unique_num();
+    foreach(array[i])
+      array[i] = i+1;
+    array.shuffle();
+    $display("generate unique number without using unique keyword and constraint -> array=%0p",array);
+  endfunction
+endclass
+
+module tb;
+  without_cons c;
+  initial begin
+    c = new();
+    c.array = new[10];
+    c.unique_num();
+  end
+endmodule
+
+//---------- method-2 ----------//
+class without_cons;
+  int array[];
+  function int unique_num(output int array[10]);
+    foreach(array[i])
+      array[i]=i+1;
+    array.shuffle();
+    return unique_num;
+  endfunction
+endclass
+
+module tb;
+  without_cons c;
+  initial begin
+    c = new();
+    c.array = new[10];
+    c.unique_num(c.array);
+    $display("generate unique number without using unique keyword and constraint -> array=%0p",c.array);
+  end
+endmodule
+
+//---------- method-3 ----------//
+class without_cons;
+  typedef int dyn_array[];
+  int array[];
+  function dyn_array unique_num(output int array[10]);
+    foreach(array[i])
+      array[i]=i+1;
+    array.shuffle();
+    return unique_num;
+  endfunction
+endclass
+
+module tb;
+  without_cons c;
+  initial begin
+    c = new();
+    c.array = new[10];
+    c.unique_num(c.array);
+    $display("generate unique number without using unique keyword and constraint -> array=%0p",c.array);
+  end
+endmodule
+NOTE(method-2 and method-3):- Non-void Function Used In Void Context tb, "c.unique_num"
+                              The non-void function 'without_cons::unique_num' is used as a void function.
+                              Hence the value returned by the function will be ignored.
+                              Please cast the function call with void in case the value returned by the function is not needed.
+
+//---------- method-4 ----------//
+class without_cons;
+  rand int array[];
+  function void post_randomize();
+    foreach(array[i])begin
+      foreach(array[j])begin
+        if(i!=j)begin
+          while(array[i] == array[j])
+            $display("array element is not unique");
+        end
+      end
+    end
+      $display("unique array -> %0p",array);
+  endfunction
+endclass
+
+module tb;
+  without_cons c;
+  initial begin
+    c = new();
+    c.array=new[10];
+      c.randomize() with {foreach(c.array[i]) c.array[i] inside {[1:100]};};
+  end
+endmodule
+
+
+
 
 
 
