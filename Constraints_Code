@@ -1173,6 +1173,42 @@ module tb;
   end
 endmodule
 
+//---------- method-5 without class ----------//
+module tb;
+  int array[];
+  initial begin
+    array = new[10];
+    foreach(array[i])begin
+      array[i] = i+1;
+    end
+    array.shuffle();
+    $display("array=%0p",array);
+  end
+endmodule
+
+//---------- method-6 without class ----------//
+module tb;
+  int array[];
+  int num;
+  initial begin
+    array = new[10];
+    foreach(array[i])begin
+      do begin
+        num = 0;
+        array[i] = $urandom_range(1,100);
+        for(int j=0; j<i; j++)begin
+          if(array[i] == array[j])begin
+            num = 1;
+            break;
+          end
+        end
+      end
+      while(num);
+    end
+    $display("array=%0p , num=%0d",array,num);
+  end
+endmodule
+
 
 
 
