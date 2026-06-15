@@ -1209,8 +1209,25 @@ module tb;
   end
 endmodule
 
-
-
+//---------- method-7 without class ----------//
+module tb;
+  int array[];
+  bit uni[int];
+  int temp;
+  initial begin
+    array = new[10];
+    foreach(array[i])begin
+      do begin
+        temp = $urandom_range(1,100);
+      end
+      while(uni.exists(temp));
+      array[i] = temp;
+      uni[temp] = 1;
+      $display("uni[%0d]=%0d , temp=%0d",i,uni[i],temp);
+    end
+      $display("unique array -> array=%0p",array);
+  end
+endmodule
 
 
 
