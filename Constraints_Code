@@ -1282,6 +1282,39 @@ module tb;
   end
 endmodule
 
+//---------- method-3 ----------//
+class cons;
+  rand int array[][];
+  constraint size {array.size() inside {[3:5]}; foreach(array[i]) array[i].size() inside {[6:8]};} //Take dynamic row and columm value.
+  constraint value {foreach(array[i,j]){
+                      if(i==0 && j==0)
+                        array[i][j] == 1;
+                      else if(j>0)
+                        array[i][j] == array[i][j-1] + 1;
+                      else if(i>0 && j==0)
+                        array[i][j] == array[i-1][array[i-1].size()-1] + 1;}}
+  function void post_randomize();
+    foreach(array[i])begin
+     foreach(array[i][j])begin
+       $write("  %0d",array[i][j]);
+     end
+       $display();
+    end
+       $display("\n");
+  endfunction
+endclass                    
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    repeat(3)
+    c.randomize();
+  end
+endmodule
+Note:-method-3 code have tools specific error. Some simulators require explicit allocation of the 
+      inner dynamic arrays before constraining their sizes. and randomization fails.
+
 
 
 
