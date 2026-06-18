@@ -1317,6 +1317,60 @@ Note:-method-3 code have tools specific error. Some simulators require explicit 
 
 
 
+29.Constraint to check whether the randomized number is palindrome or not
+Ans:
+defination: Palindrome_number:A palindrome number is a number that remains the same when digits are reversed.
+//---------- method-1 with constraint ----------//
+class cons;
+  rand bit [3:0] d0,d1,d2;
+  rand int num;
+  constraint range {d0 inside {[1:9]};
+                    d1 inside {[0:9]};
+                    d2 inside {[0:9]};}
+  constraint value {num == d0*10000+d1*1000+d2*100+d1*10+d0;}
+  function void post_randomize();
+    $display("num = %0d",num);
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    repeat(10)
+      c.randomize();
+  end
+endmodule
+
+//---------- method-2 ----------//
+class cons;
+  rand int p_num[5];
+  constraint range {p_num[0] inside {[1:9]};
+                     foreach(p_num[i])
+                      p_num[i] inside {[0:9]};}
+  constraint value {foreach(p_num[i])
+                     if(i<p_num.size()/2)
+                       p_num[i] == p_num[p_num.size()-1-i];}
+  function void post_randomize();
+    foreach(p_num[i])begin
+      $write("%0d",p_num[i]);
+    end
+      $display();
+  endfunction
+endclass
+
+module tb;
+  initial begin
+    cons c;
+    c = new();
+    repeat(5)
+      c.randomize();
+  end
+endmodule
+
+
+
+
 
 
 
