@@ -1342,7 +1342,7 @@ module tb;
   end
 endmodule
 
-//---------- method-2 ----------//
+//---------- method-2 with constraint and array ----------//
 class cons;
   rand int p_num[5];
   constraint range {p_num[0] inside {[1:9]};
@@ -1350,7 +1350,7 @@ class cons;
                       p_num[i] inside {[0:9]};}
   constraint value {foreach(p_num[i])
                      if(i<p_num.size()/2)
-                       p_num[i] == p_num[p_num.size()-1-i];}
+                       p_num[i] == p_num[p_num.size()-1-i];} // Reverse the digit in array
   function void post_randomize();
     foreach(p_num[i])begin
       $write("%0d",p_num[i]);
@@ -1364,6 +1364,66 @@ module tb;
     cons c;
     c = new();
     repeat(5)
+      c.randomize();
+  end
+endmodule
+
+//---------- method-3 with calling function ----------//
+class cons;
+  rand int num;
+  constraint range {num inside {[100:200]};}
+  function int gen_p_num(int a);
+    int r,sum;
+    for(int i=0; i<3; i++)begin
+    r = a%10;
+    sum = sum*10+r;
+    a = a/10;
+    end
+    return sum;
+  endfunction
+  function void post_randomize();
+    int temp;
+    temp = num;
+    if(gen_p_num(num) == temp)
+      $display("Generated number is a palindrome number -> %0d",gen_p_num(num));
+    else
+      $display("Generated number is not a palindrome number -> %0d",gen_p_num(num));
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    repeat(10)
+      c.randomize();
+  end
+endmodule
+
+//---------- method-4 with function ----------//
+class cons;
+  rand int num;
+  constraint range {num inside {[100:200]};}
+  function void post_randomize();
+    int temp,r,sum;
+    temp = num;
+    for(int i=0; i<3; i++)begin
+      r = num%10;
+      sum = sum*10+r;
+      num = num/10;
+    end
+    if(sum == temp)
+      $display("Generated number is a palindrome number -> %0d",sum);
+    else
+      $display("Generated number is not a palindrome number -> %0d",sum);
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    repeat(10)
       c.randomize();
   end
 endmodule
