@@ -1430,6 +1430,36 @@ endmodule
 
 
 
+30.Write a constraint to display the fibonacci sequence.
+Ans:
+Defination: Fibonacci sequence:The next number is found by adding up the two numbers before it
+//---------- method-1 ----------//
+class cons;
+  rand int fibonacci[];
+  constraint size {fibonacci.size() inside {[15:20]};}
+  constraint range {foreach(fibonacci[i])
+                      fibonacci[i] inside {[0:10000]};}
+  constraint value {fibonacci[0] == 0;
+                    fibonacci[1] == 1;
+                    foreach(fibonacci[i])
+                     if(i>1)
+                       fibonacci[i] == fibonacci[i-1] + fibonacci[i-2];}
+  function void post_randomize();
+    $display("Generate fibonacci sequence -> %0p",fibonacci);
+  endfunction
+endclass
+
+module tb;
+  cons c;
+  initial begin
+    c = new();
+    repeat(5)
+    c.randomize();
+  end
+endmodule
+
+
+
 
 
 
