@@ -1458,6 +1458,67 @@ module tb;
   end
 endmodule
 
+//---------- method-2 with function ----------//
+class fib_seq;
+  int fib[];
+  function void gen_fib(); // Take void function that is non return function.
+    fib[0] = 0;
+    fib[1] = 1;
+    for(int i=2; i<$size(fib); i++)begin
+      fib[i] = fib[i-2] + fib[i-1];
+    end
+  endfunction
+endclass
+
+module tb;
+  fib_seq f;
+  initial begin
+    f = new();
+    f.fib = new[15];
+    f.gen_fib();
+    $display("generate fibonacci sequence -> %0p",f.fib);
+  end
+endmodule
+
+class fib_seq;
+  int fib[];
+  function int gen_fib(output int fib[15]); // take int type function that is return type.
+    fib[0] = 0;
+    fib[1] = 1;
+    for(int i=2; i<$size(fib); i++)begin
+      fib[i] = fib[i-2] + fib[i-1];
+    end
+    return gen_fib;
+  endfunction
+endclass
+
+module tb;
+  fib_seq f;
+  initial begin
+    f = new();
+    f.fib = new[15];
+    f.gen_fib(f.fib);
+    $display("generate fibonacci sequence -> %0p",f.fib);
+  end
+endmodule
+// Note:- If my input is array type then we don't call the function in display.
+
+//---------- method-3 without function and constraint ----------//
+module tb;
+  int fib[];
+  initial begin
+    fib = new[15];
+    repeat(5)begin
+    fib[0] = $urandom_range(0,5);
+    fib[1] = $urandom_range(0,5);
+    for(int i=2; i<$size(fib); i++)begin
+      fib[i] = fib[i-2] + fib[i-1];
+    end
+      $display("Generate fibonacci sequence -> fib=%0p",fib);
+    end
+  end
+endmodule
+
 
 
 
